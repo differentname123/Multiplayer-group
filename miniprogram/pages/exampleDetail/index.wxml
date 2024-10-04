@@ -70,12 +70,31 @@
         <view class="img_info_detail">{{imgSrc}}</view>
       </view>
     </view>
-    <view class="button" bindtap="uploadImg" wx:if="{{!haveGetImgSrc}}">上传一张图片</view>
+    <view class="button" bindtap="uploadMedia" wx:if="{{!haveGetImgSrc}}">上传一张图片</view>
     <view class="button_clear" bindtap="clearImgSrc" wx:if="{{haveGetImgSrc}}">清空</view>
     <view class="tip">在“资源管理器>miniprogram>pages>uploadFile>index.js”找到相应代码，体验该能力</view>
     <cloud-tip-modal showUploadTipProps="{{showUploadTip}}"></cloud-tip-modal>
   </view>
 </block>
+
+<block wx:if="{{ type === 'loadFile' }}">
+  <view>
+    <view class="top_tip">从服务器加载默认图片并展示。</view>
+    <view class="box_text" wx:if="{{!imgSrc}}">加载的图片将展示在这里</view>
+    <view wx:if="{{imgSrc}}" class="code_box">
+      <image class="code_img" src="{{imgSrc}}"></image>
+      <view class="img_info">
+        <view class="img_info_title">文件路径</view>
+        <view class="img_info_detail">{{imgSrc}}</view>
+      </view>
+    </view>
+    <view class="button" bindtap="loadImage" wx:if="{{!haveGetImgSrc}}">加载一张图片</view>
+    <view class="button_clear" bindtap="clearImgSrc" wx:if="{{haveGetImgSrc}}">清空</view>
+    <view class="tip">在“资源管理器>miniprogram>pages>loadFile>index.js”找到相应代码，体验该能力</view>
+    <cloud-tip-modal showUploadTipProps="{{showUploadTip}}"></cloud-tip-modal>
+  </view>
+</block>
+
 
 <block wx:if="{{ type === 'singleTemplate' }}">
   <!--pages/singleTemplate/index.wxml-->

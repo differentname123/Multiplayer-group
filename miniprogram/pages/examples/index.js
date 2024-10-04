@@ -53,6 +53,10 @@ Page({
             type: 'uploadFile',
             title: '上传文件',
           },
+          {
+            type: 'loadFile',
+            title: '加载文件',
+          },
         ],
       },
       {
