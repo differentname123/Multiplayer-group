@@ -21,7 +21,7 @@ def make_request(gzdhylOain):
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "accept-encoding": "gzip, deflate, br, zstd",
         "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
-        "cookie": 'rec_list_brand_amazing_price_group=rec_list_brand_amazing_price_group_Xt283t; api_uid=CkjpJmcCQXoqewBVtILWAg==; webp=1; jrpl=CALqopS1ixhpEb4GNdCDGcMTHkzskqOm; njrpl=CALqopS1ixhpEb4GNdCDGcMTHkzskqOm; dilx=Zg3Np6qOYb9i5y9tCHeyR; _nano_fp=Xpmxl0PoXp9JnqXJX9_Z6hpHEuw5OsST9Ira3Ed9; PDDAccessToken=CCLQBHRUKYVF4XGR73FECACDCOD4R2BCL4MCL5AI2FZDN6BUNOSQ120570b; pdd_user_id=4365968471; pdd_user_uin=X4SHUDVGMG7HGQBVER6XRAMGHI_GEXDA; pdd_vds=gaLxNbPOQIolQxIGInNGPbElNxOyyLPGoymwOsQmbOtGLLQwisQlnoIOanPm',
+        "cookie": 'api_uid=CkjpJmcCQXoqewBVtILWAg==; webp=1; jrpl=CALqopS1ixhpEb4GNdCDGcMTHkzskqOm; njrpl=CALqopS1ixhpEb4GNdCDGcMTHkzskqOm; dilx=Zg3Np6qOYb9i5y9tCHeyR; _nano_fp=Xpmxl0PoXp9JnqXJX9_Z6hpHEuw5OsST9Ira3Ed9; PDDAccessToken=C2KSDKYYLOZJFETH44POXAZFFRO65F3KSR3GB4TXYVDSUZQYCBXQ120570b; pdd_user_id=4365968471; pdd_user_uin=X4SHUDVGMG7HGQBVER6XRAMGHI_GEXDA; pdd_vds=gaLKNzPZmpOXipOzoWizbpnzEFOHtMbpnMykLHOFQpnKbhLWoVaMGMiqIFOX',
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
         "sec-ch-ua": '"Google Chrome";v="129", "Not=A?Brand";v="8", "Chromium";v="129"',
         "sec-ch-ua-mobile": "?0",
@@ -113,7 +113,7 @@ def make_request(gzdhylOain):
         print("Error:", e)
         return None
 
-response = make_request("gzdhylOain")
+response = make_request("WRvgUjQ6du")
 if response:
     print("Final URL:", response.url)
     print("Response Content:", response.text)

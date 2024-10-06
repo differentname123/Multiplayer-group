@@ -1,0 +1,30 @@
+{
+  "pages": [
+    "pages/index/index",  
+    "pages/share/share",  
+    "pages/mine/mine"    
+  ],
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "/images/home.png",
+        "selectedIconPath": "/images/home.png"
+      },
+      {
+        "pagePath": "pages/share/share",
+        "text": "分享",
+        "iconPath": "/images/home.png",
+        "selectedIconPath": "/images/home.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "/images/home.png",
+        "selectedIconPath": "/images/home.png"
+      }
+    ],
+    "position": "bottom"
+  }
+}

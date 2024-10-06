@@ -1,0 +1,31 @@
+<view class="container">
+  <!-- 顶部搜索框 -->
+  <view class="search-bar">
+    <input class="search-input" placeholder="搜索商品" bindinput="onSearch"/>
+  </view>
+
+  <!-- 筛选框 -->
+  <view class="filter-bar">
+    <text class="filter-item">全部</text>
+    <text class="filter-item">拼团</text>
+    <text class="filter-item">价格</text>
+  </view>
+
+  <!-- 商品列表 -->
+  <scroll-view scroll-y="true" style="height: 100vh;" bindscrolltolower="loadMoreProducts">
+  <view class="product-list">
+    <block wx:for="{{productList}}" wx:key="id">
+      <view class="product-item">
+        <image-loader src="{{item.imageUrl}}" default-img="/images/home.png" />
+        <view class="product-info">
+          <text class="product-title">{{item.title}}</text>
+          <view class="price-group">
+            <text class="price">{{item.price}}</text>
+            <button class="group-btn">参与拼团</button>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+</scroll-view>
+</view>
