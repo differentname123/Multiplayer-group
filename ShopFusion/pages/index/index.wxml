@@ -1,31 +1,51 @@
 <view class="container">
-  <!-- 顶部搜索框 -->
-  <view class="search-bar">
-    <input class="search-input" placeholder="搜索商品" bindinput="onSearch"/>
-  </view>
+  <!-- 搜索栏 -->
+  <van-search
+    placeholder="搜索商品"
+    bind:search="onSearch"
+    show-action
+    bind:cancel="onCancel"
+  />
 
-  <!-- 筛选框 -->
-  <view class="filter-bar">
-    <text class="filter-item">全部</text>
-    <text class="filter-item">拼团</text>
-    <text class="filter-item">价格</text>
-  </view>
+<!-- 筛选栏 -->
+<view class="filter-bar">
+  <van-tag
+    color="{{filterSelected.onePerson ? '#ff3c3c' : '#f5f5f5'}}"
+    bindtap="onFilterClick"
+    data-type="onePerson"
+  >
+    差一人
+  </van-tag>
+  <van-tag
+    color="{{filterSelected.mySubscription ? '#ff3c3c' : '#f5f5f5'}}"
+    bindtap="onFilterClick"
+    data-type="mySubscription"
+  >
+    我的订阅
+  </van-tag>
+</view>
+
+
+
+
 
   <!-- 商品列表 -->
   <scroll-view scroll-y="true" style="height: 100vh;" bindscrolltolower="loadMoreProducts">
-  <view class="product-list">
-    <block wx:for="{{productList}}" wx:key="id">
-      <view class="product-item">
-        <image-loader src="{{item.imageUrl}}" default-img="/images/home.png" />
-        <view class="product-info">
-          <text class="product-title">{{item.title}}</text>
-          <view class="price-group">
-            <text class="price">{{item.price}}</text>
-            <button class="group-btn">参与拼团</button>
-          </view>
-        </view>
-      </view>
-    </block>
-  </view>
-</scroll-view>
+    <view class="product-list">
+      <block wx:for="{{filteredProductList}}" wx:key="id">
+        <van-card
+          thumb="{{item.imageUrl}}"
+          title="{{item.title}}"
+          desc="{{item.description}}"
+          price="{{item.price}}"
+          bind:click="onProductClick"
+        >
+          <van-button slot="footer" type="info" size="mini" bind:tap="onJoinGroup">参与拼团</van-button>
+        </van-card>
+      </block>
+
+      <!-- 加载更多 -->
+      <van-loading wx:if="{{loadingMore}}" />
+    </view>
+  </scroll-view>
 </view>

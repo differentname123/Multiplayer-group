@@ -10,7 +10,7 @@
         "pagePath": "pages/index/index",
         "text": "首页",
         "iconPath": "/images/home.png",
-        "selectedIconPath": "/images/home.png"
+        "selectedIconPath": "/images/home_select.png"
       },
       {
         "pagePath": "pages/share/share",

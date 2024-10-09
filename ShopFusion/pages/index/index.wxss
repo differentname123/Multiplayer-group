@@ -1,58 +1,65 @@
-/* 首页样式 */
+/* 页面容器 */
 .container {
   padding: 10px;
 }
-.search-bar {
+
+/* 商品列表样式 */
+.product-list {
+  margin-top: 10px;
+}
+
+.product-item {
   display: flex;
-  justify-content: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
   margin-bottom: 10px;
 }
-.search-input {
-  width: 90%;
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+
+.product-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
 }
+
+.product-info {
+  flex: 1;
+  margin-left: 15px;
+}
+
+.price-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.price {
+  color: #ff3c3c;
+  font-weight: bold;
+}
+
+/* 搜索框与筛选栏样式 */
+van-search {
+  margin-bottom: 15px; /* 增加搜索框和筛选栏之间的间距 */
+}
+
 .filter-bar {
   display: flex;
   justify-content: space-around;
   margin-bottom: 15px;
 }
-.filter-item {
-  color: #ff3c3c;
-}
-.product-list {
-  display: flex;
-  flex-direction: column;
-}
-.product-item {
-  display: flex;
-  margin-bottom: 10px;
-}
-.product-info {
-  margin-left: 10px;
-}
-.price-group {
-  display: flex;
-  justify-content: space-between;
-}
-.group-btn {
-  background-color: #ff3c3c;
-  color: white;
-  border-radius: 5px;
-}
-.product-item {
-  display: flex;
-  margin-bottom: 10px;
+
+van-tag {
+  padding: 5px 10px;
+  transition: all 0.3s ease;
 }
 
-.product-item image {
-  width: 100px;  /* 统一宽度 */
-  height: 100px; /* 统一高度 */
-  object-fit: cover; /* 确保图片适应宽高，保持内容 */
+van-tag[type="primary"] {
+  background-color: #ff3c3c !important;
+  color: white !important;
 }
 
-.product-info {
-  margin-left: 10px;
-  flex: 1;
+van-tag[type="default"] {
+  background-color: #f5f5f5 !important;
+  color: #333 !important;
 }
