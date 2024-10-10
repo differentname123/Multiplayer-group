@@ -1,65 +1,42 @@
 /* 页面容器 */
-.container {
+.page-container {
   padding: 10px;
+  background-color: #f0f0f5;
+  min-height: 100vh;
 }
 
 /* 商品列表样式 */
 .product-list {
-  margin-top: 10px;
-}
-
-.product-item {
-  display: flex;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 10px;
-}
-
-.product-image {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-}
-
-.product-info {
-  flex: 1;
-  margin-left: 15px;
-}
-
-.price-group {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-top: 5px;
 }
 
-.price {
-  color: #ff3c3c;
-  font-weight: bold;
-}
-
-/* 搜索框与筛选栏样式 */
+/* 搜索栏与筛选栏样式 */
 van-search {
-  margin-bottom: 15px; /* 增加搜索框和筛选栏之间的间距 */
+  margin-bottom: 5px;
 }
 
+/* 筛选栏样式 */
 .filter-bar {
   display: flex;
   justify-content: space-around;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 }
 
+/* 标签样式 */
 van-tag {
   padding: 5px 10px;
   transition: all 0.3s ease;
+  color: #333 !important;
 }
 
+/* 选中标签的样式 */
 van-tag[type="primary"] {
   background-color: #ff3c3c !important;
   color: white !important;
 }
 
+/* 未选中标签的样式 */
 van-tag[type="default"] {
   background-color: #f5f5f5 !important;
-  color: #333 !important;
+  color: black !important;
 }

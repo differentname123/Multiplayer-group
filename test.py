@@ -1,62 +1,58 @@
 import requests
 from bs4 import BeautifulSoup
-import os
-import html
+import json
+import re
 
-def make_request(gzdhylOain):
+def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=None):
     """
     发起请求并获取最终页面内容，包含重定向处理和异常捕获。
 
     参数：
-    gzdhylOain (str): 需要传递的参数，用于请求中的某个特定部分。
+    - key_code (str): 需要传递的参数，用于请求中的某个特定部分。
+    - base_url (str): 基础 URL，可自定义。
+    - headers (dict): 请求头信息，可以自定义覆盖默认值。
 
     返回：
-    Response: 最终的 HTTP 响应。
+    - dict: 包含提取到的 raw_data 或者错误信息。
     """
-    # 初始请求 URL
-    initial_url = f"https://file-link.pinduoduo.com/{gzdhylOain}"
+    # 构建初始请求 URL
+    initial_url = f"{base_url}/{key_code}"
 
-    # 请求头信息，模拟真实用户请求
-    headers = {
-        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-        "accept-encoding": "gzip, deflate, br, zstd",
-        "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
-        "cookie": 'api_uid=CkjpJmcCQXoqewBVtILWAg==; webp=1; jrpl=CALqopS1ixhpEb4GNdCDGcMTHkzskqOm; njrpl=CALqopS1ixhpEb4GNdCDGcMTHkzskqOm; dilx=Zg3Np6qOYb9i5y9tCHeyR; _nano_fp=Xpmxl0PoXp9JnqXJX9_Z6hpHEuw5OsST9Ira3Ed9; PDDAccessToken=C2KSDKYYLOZJFETH44POXAZFFRO65F3KSR3GB4TXYVDSUZQYCBXQ120570b; pdd_user_id=4365968471; pdd_user_uin=X4SHUDVGMG7HGQBVER6XRAMGHI_GEXDA; pdd_vds=gaLKNzPZmpOXipOzoWizbpnzEFOHtMbpnMykLHOFQpnKbhLWoVaMGMiqIFOX',
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
-        "sec-ch-ua": '"Google Chrome";v="129", "Not=A?Brand";v="8", "Chromium";v="129"',
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": '"Windows"',
-        "sec-fetch-dest": "document",
-        "sec-fetch-mode": "navigate",
-        "sec-fetch-site": "none",
-        "sec-fetch-user": "?1",
-        "upgrade-insecure-requests": "1"
+    # 默认的请求头信息
+    default_headers =  {
+      "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
+      "cookie": 'api_uid=CkjpJmcCQXoqewBVtILWAg==; webp=1; PDDAccessToken=C2KSDKYYLOZJFETH44POXAZFFRO65F3KSR3GB4TXYVDSUZQYCBXQ120570b;'
     }
+
+    # 合并自定义 headers
+    if headers:
+        default_headers.update(headers)
 
     try:
         # 1. 发起初始请求，获取重定向后的 URL
-        response = requests.get(initial_url, headers=headers, allow_redirects=False)
+        response = requests.get(initial_url, headers=default_headers, allow_redirects=False)
         response.raise_for_status()
 
         # 获取重定向的目标 URL
         if response.status_code in [301, 302, 307, 308]:
             redirected_url = response.headers.get('Location')
             if not redirected_url:
-                raise ValueError("Redirected URL not found in headers.")
+                return {'status': 'error', 'message': "Redirected URL not found in headers."}
         else:
-            raise ValueError(f"Unexpected status code: {response.status_code}")
+            return {'status': 'error', 'message': f"Unexpected status code: {response.status_code}"}
 
-        # 2. 访问重定向后的 URL (group7.html)
-        response = requests.get(redirected_url, headers=headers, allow_redirects=False)
+        # 2. 访问重定向后的 URL
+        response = requests.get(redirected_url, headers=default_headers, allow_redirects=False)
         response.raise_for_status()
 
-        # 获取重定向后的最终页面（可能通过 JavaScript 重定向）
+        # 3. 解析网页，找到最终 URL (可能是通过 JavaScript 跳转)
         if response.status_code == 200:
-            # 从响应内容中分析跳转到 `pincard_ask.html` 的 URL
             soup = BeautifulSoup(response.text, 'html.parser')
             script_tags = soup.find_all('script')
 
-            # 查找包含跳转到 `pincard_ask.html` 的 JavaScript
+            # 查找包含 window.rawData 的 JavaScript
             final_url = None
             for script in script_tags:
                 if 'location.replace' in script.text:
@@ -67,53 +63,37 @@ def make_request(gzdhylOain):
                         break
 
             if not final_url:
-                raise ValueError("Final URL not found in JavaScript.")
+                return {'status': 'error', 'message': "Final URL not found in JavaScript."}
         else:
-            raise ValueError(f"Unexpected status code when accessing group7.html: {response.status_code}")
+            return {'status': 'error', 'message': f"Unexpected status code when accessing group7.html: {response.status_code}"}
 
-        # 3. 访问最终的 `pincard_ask.html` 页面
-        response = requests.get(final_url, headers=headers)
+        # 4. 访问最终的 `pincard_ask.html` 页面
+        response = requests.get(final_url, headers=default_headers)
         response.raise_for_status()
 
-        # 保存返回内容中的图片
+        # 5. 提取 window.rawData 数据
         soup = BeautifulSoup(response.text, 'html.parser')
-        parent_div = soup.find('div', class_='st3konfY')
+        script_tags = soup.find_all('script')
 
-        # Step 2: 在该父容器中查找符合特征的 img 标签
-        target_img = None
-        if parent_div:
-            img_tags = parent_div.find_all('img')
-            for img in img_tags:
-                src = img.get('src', '')
-                # 确保提取特定域名且路径包含 "/mms-material-img/"
-                if 'img.pddpic.com' in src and '/mms-material-img/' in src:
-                    target_img = img
-                    break
-        # img_tags = soup.find_all('img')
-        # if not os.path.exists('images'):
-        #     os.makedirs('images')
-        # for index, img_tag in enumerate(img_tags):
-        #     img_url = img_tag.get('src')
-        #     if img_url:
-        #         if not img_url.startswith('http'):
-        #             img_url = "https://mobile.yangkeduo.com" + img_url
-        #         img_response = requests.get(img_url, headers=headers)
-        #         if img_response.status_code == 200:
-        #             with open(f'images/image_{index}.jpg', 'wb') as f:
-        #                 f.write(img_response.content)
-                    # print(f"Image {index} saved. URL: {img_url}")
+        raw_data = None
+        for script in script_tags:
+            if script.string and 'window.rawData' in script.string:
+                match = re.search(r'window\.rawData\s*=\s*({.*?});', script.string)
+                if match:
+                    raw_data_str = match.group(1)
+                    try:
+                        raw_data = json.loads(raw_data_str)
+                    except json.JSONDecodeError:
+                        return {'status': 'error', 'message': "JSON parsing failed."}
+                break
 
-        # 返回最终的响应
-        return response
+        return {'status': 'success', 'data': raw_data}
 
     except requests.RequestException as e:
-        print("Request failed:", e)
-        return None
+        return {'status': 'error', 'message': f"Request failed: {str(e)}"}
     except ValueError as e:
-        print("Error:", e)
-        return None
+        return {'status': 'error', 'message': f"Error: {str(e)}"}
 
-response = make_request("WRvgUjQ6du")
-if response:
-    print("Final URL:", response.url)
-    print("Response Content:", response.text )
+# 调用示例
+raw_data = make_request("WRvgUjQ6du")
+print(raw_data)

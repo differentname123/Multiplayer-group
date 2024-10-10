@@ -1,4 +1,4 @@
-<view class="container">
+<view class="page-container">
   <!-- 搜索栏 -->
   <van-search
     placeholder="搜索商品"
@@ -7,26 +7,25 @@
     bind:cancel="onCancel"
   />
 
-<!-- 筛选栏 -->
-<view class="filter-bar">
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
   <van-tag
     color="{{filterSelected.onePerson ? '#ff3c3c' : '#f5f5f5'}}"
+    text-color="{{filterSelected.onePerson ? 'white' : 'black'}}"
     bindtap="onFilterClick"
     data-type="onePerson"
   >
-    差一人
+    只差一人
   </van-tag>
   <van-tag
     color="{{filterSelected.mySubscription ? '#ff3c3c' : '#f5f5f5'}}"
+    text-color="{{filterSelected.mySubscription ? 'white' : 'black'}}"
     bindtap="onFilterClick"
     data-type="mySubscription"
   >
     我的订阅
   </van-tag>
 </view>
-
-
-
 
 
   <!-- 商品列表 -->

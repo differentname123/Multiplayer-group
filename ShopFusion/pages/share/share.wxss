@@ -1,1 +1,73 @@
 /* pages/share/share.wxss */
+.page-container {
+  padding: 20px;
+}
+
+.page-title {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.tutorial-button {
+  margin-bottom: 20px;
+}
+
+.upload-section {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.upload-button {
+  width: 100%;
+}
+
+.image-preview {
+  display: flex;
+  overflow-x: scroll;
+}
+
+.image-item {
+  margin-right: 10px;
+  text-align: center;
+}
+
+.preview-image {
+  width: 100px;
+  height: 100px;
+}
+
+.parse-result {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+
+.image-preview {
+  display: flex;
+  overflow-x: scroll;
+}
+
+.image-item {
+  margin-right: 10px;
+  text-align: center;
+}
+
+.preview-image {
+  width: 100px;
+  height: 100px;
+}
+
+.parse-result {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}

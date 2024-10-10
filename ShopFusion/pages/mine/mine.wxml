@@ -1,2 +1,25 @@
-<!--pages/mine/mine.wxml-->
-<text>pages/mine/mine.wxml</text>
+<view class="page-container">
+  <!-- 页面标题 -->
+  <view class="page-title">分享我的图片</view>
+
+  <!-- 图片上传区域 -->
+  <view class="upload-section">
+    <button bindtap="chooseImage">上传图片</button>
+    <scroll-view scroll-x="true" class="image-preview">
+      <block wx:for="{{images}}" wx:key="*this">
+        <image src="{{item}}" class="preview-image"></image>
+      </block>
+    </scroll-view>
+  </view>
+
+  <!-- 分享结果显示区域 -->
+  <view class="result-section" wx:if="{{result}}">
+    <text>分享结果：</text>
+    <text>{{result}}</text>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button bindtap="parseImages" wx:if="{{images.length > 0}}">解析并分享</button>
+  </view>
+</view>
