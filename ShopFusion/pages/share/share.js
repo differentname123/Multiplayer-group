@@ -110,99 +110,115 @@ Page({
   },
 
   // 裁剪图片并再次尝试识别
-  cropAndRetry(filePath, imgWidth, imgHeight) {
-    const that = this;
-    const ctx = wx.createCanvasContext('qrCanvas', this);
+cropAndRetry(filePath, imgWidth, imgHeight) {
+  const that = this;
+  const ctx = wx.createCanvasContext('qrCanvas', this);
 
-    // 计算裁剪区域
-    const cropLeft = Math.floor(imgWidth * 0.5); // 左侧裁剪掉 1/2
-    const cropTop = Math.floor(imgHeight * 0.5); // 上部裁剪掉 1/2
-    const cropRight = imgWidth; // 右侧不裁剪
-    const cropBottom = Math.floor(imgHeight * 0.75); // 下部裁剪掉 1/4
+  // 计算裁剪区域
+  const cropLeft = Math.floor(imgWidth * 0.75); // 左侧裁剪掉 1/2
+  const cropTop = Math.floor(imgHeight * 0.5); // 上部裁剪掉 1/2
+  const cropRight = imgWidth; // 右侧不裁剪
+  const cropBottom = Math.floor(imgHeight * 0.75); // 下部裁剪掉 1/4
 
-    const cropWidth = cropRight - cropLeft;
-    const cropHeight = cropBottom - cropTop;
+  const cropWidth = cropRight - cropLeft;
+  const cropHeight = cropBottom - cropTop;
 
-    // 确保裁剪后的宽高为正数
-    if (cropWidth <= 0 || cropHeight <= 0) {
-      console.error('裁剪区域计算错误');
-      that.handleDecodeFailure(filePath);
-      return;
-    }
+  // 确保裁剪后的宽高为正数
+  if (cropWidth <= 0 || cropHeight <= 0) {
+    console.error('裁剪区域计算错误');
+    that.handleDecodeFailure(filePath);
+    return;
+  }
 
-    // 输出裁剪区域信息
-    console.log(`Crop area: left=${cropLeft}, top=${cropTop}, width=${cropWidth}, height=${cropHeight}`);
+  // 输出裁剪区域信息
+  console.log(`Crop area: left=${cropLeft}, top=${cropTop}, width=${cropWidth}, height=${cropHeight}`);
 
-    // 限制 Canvas 的最大尺寸
-    const maxCanvasSize = 600; // 可根据需要调整
-    let canvasWidth = cropWidth;
-    let canvasHeight = cropHeight;
+  // 限制 Canvas 的最大尺寸
+  const maxCanvasSize = 600; // 可根据需要调整
+  let canvasWidth = cropWidth;
+  let canvasHeight = cropHeight;
 
-    if (cropWidth > maxCanvasSize || cropHeight > maxCanvasSize) {
-      const scale = Math.min(maxCanvasSize / cropWidth, maxCanvasSize / cropHeight);
-      canvasWidth = Math.floor(cropWidth * scale);
-      canvasHeight = Math.floor(cropHeight * scale);
-    }
+  if (cropWidth > maxCanvasSize || cropHeight > maxCanvasSize) {
+    const scale = Math.min(maxCanvasSize / cropWidth, maxCanvasSize / cropHeight);
+    canvasWidth = Math.floor(cropWidth * scale);
+    canvasHeight = Math.floor(cropHeight * scale);
+  }
 
-    // 更新 Canvas 的尺寸为裁剪区域的尺寸
-    that.setData({
-      canvasWidth: canvasWidth,
-      canvasHeight: canvasHeight,
-    });
+  // 更新 Canvas 的尺寸为裁剪区域的尺寸
+  that.setData({
+    canvasWidth: canvasWidth,
+    canvasHeight: canvasHeight,
+  });
 
-    // 清理 Canvas
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  // 清理 Canvas
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-    // 绘制裁剪后的图片到 Canvas
-    ctx.drawImage(
-      filePath,
-      cropLeft,
-      cropTop,
-      cropWidth,
-      cropHeight,
-      0,
-      0,
-      canvasWidth,
-      canvasHeight
-    );
-    ctx.draw(false, () => {
-      // 获取裁剪后图片的像素数据
-      wx.canvasGetImageData({
-        canvasId: 'qrCanvas',
-        x: 0,
-        y: 0,
-        width: canvasWidth,
-        height: canvasHeight,
-        success(res) {
-          console.log(`Cropped canvasGetImageData success: width=${res.width}, height=${res.height}, data length=${res.data.length}`);
+  // 绘制裁剪后的图片到 Canvas
+  ctx.drawImage(
+    filePath,
+    cropLeft,
+    cropTop,
+    cropWidth,
+    cropHeight,
+    0,
+    0,
+    canvasWidth,
+    canvasHeight
+  );
+  ctx.draw(false, () => {
+    // 获取裁剪后图片的像素数据
+    wx.canvasGetImageData({
+      canvasId: 'qrCanvas',
+      x: 0,
+      y: 0,
+      width: canvasWidth,
+      height: canvasHeight,
+      success(res) {
+        console.log(`Cropped canvasGetImageData success: width=${res.width}, height=${res.height}, data length=${res.data.length}`);
 
-          const imageData = {
-            data: new Uint8ClampedArray(res.data),
-            width: res.width,
-            height: res.height,
-          };
+        const imageData = {
+          data: new Uint8ClampedArray(res.data),
+          width: res.width,
+          height: res.height,
+        };
 
-          try {
-            const code = jsQR(imageData.data, imageData.width, imageData.height);
-            if (code) {
-              that.handleQRCodeResult(code.data, filePath);
-            } else {
-              console.log('Second attempt to decode QR code failed.');
-              // 识别失败，调用处理函数
-              that.handleDecodeFailure(filePath);
-            }
-          } catch (error) {
-            console.error('jsQR error after cropping:', error);
-            that.handleDecodeFailure(filePath);
+        try {
+          const code = jsQR(imageData.data, imageData.width, imageData.height);
+          if (code) {
+            that.handleQRCodeResult(code.data, filePath);
+          } else {
+            console.log('Second attempt to decode QR code failed.');
+            // 识别失败，将裁剪后的图片路径作为最终的图片显示
+            wx.canvasToTempFilePath({
+              canvasId: 'qrCanvas',
+              success(tempFileRes) {
+                console.log('Cropped image saved:', tempFileRes.tempFilePath);
+                that.setData({
+                  images: that.data.images.concat({
+                    path: tempFileRes.tempFilePath,
+                    result: '解析失败，显示裁剪后的图片',
+                  }),
+                });
+              },
+              fail(err) {
+                console.error('Failed to save cropped image:', err);
+                that.handleDecodeFailure(filePath);
+              },
+            });
           }
-        },
-        fail(err) {
-          console.error('获取裁剪后像素数据失败', err);
+        } catch (error) {
+          console.error('jsQR error after cropping:', error);
           that.handleDecodeFailure(filePath);
-        },
-      });
+        }
+      },
+      fail(err) {
+        console.error('获取裁剪后像素数据失败', err);
+        that.handleDecodeFailure(filePath);
+      },
     });
-  },
+  });
+},
+
 
   // 处理二维码解析结果
   handleQRCodeResult(resultText, filePath) {

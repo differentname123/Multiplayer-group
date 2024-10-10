@@ -95,5 +95,5 @@ def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=N
         return {'status': 'error', 'message': f"Error: {str(e)}"}
 
 # 调用示例
-raw_data = make_request("WRvgUjQ6du")
+raw_data = make_request("FwuJqEOuvi")
 print(raw_data)
