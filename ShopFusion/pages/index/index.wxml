@@ -1,3 +1,4 @@
+<!-- index.wxml -->
 <view class="page-container">
   <!-- 搜索栏 -->
   <van-search
@@ -9,37 +10,43 @@
 
   <!-- 筛选栏 -->
   <view class="filter-bar">
-  <van-tag
-    color="{{filterSelected.onePerson ? '#ff3c3c' : '#f5f5f5'}}"
-    text-color="{{filterSelected.onePerson ? 'white' : 'black'}}"
-    bindtap="onFilterClick"
-    data-type="onePerson"
-  >
-    只差一人
-  </van-tag>
-  <van-tag
-    color="{{filterSelected.mySubscription ? '#ff3c3c' : '#f5f5f5'}}"
-    text-color="{{filterSelected.mySubscription ? 'white' : 'black'}}"
-    bindtap="onFilterClick"
-    data-type="mySubscription"
-  >
-    我的订阅
-  </van-tag>
-</view>
-
+    <van-tag
+      color="{{filterSelected.onePerson ? '#ff3c3c' : '#f5f5f5'}}"
+      text-color="{{filterSelected.onePerson ? 'white' : 'black'}}"
+      bindtap="onFilterClick"
+      data-type="onePerson"
+    >
+      只差一人
+    </van-tag>
+    <van-tag
+      color="{{filterSelected.mySubscription ? '#ff3c3c' : '#f5f5f5'}}"
+      text-color="{{filterSelected.mySubscription ? 'white' : 'black'}}"
+      bindtap="onFilterClick"
+      data-type="mySubscription"
+    >
+      我的订阅
+    </van-tag>
+  </view>
 
   <!-- 商品列表 -->
-  <scroll-view scroll-y="true" style="height: 100vh;" bindscrolltolower="loadMoreProducts">
+  <scroll-view scroll-y="true" style="height: calc(100vh - 100rpx);" bindscrolltolower="loadMoreProducts">
     <view class="product-list">
       <block wx:for="{{filteredProductList}}" wx:key="id">
         <van-card
           thumb="{{item.imageUrl}}"
           title="{{item.title}}"
-          desc="{{item.description}}"
-          price="{{item.price}}"
+          price="¥{{item.price}}"
+          desc="优惠：¥{{item.discountPrice}}"
+          tag="{{item.countdown}}"
           bind:click="onProductClick"
+          data-item="{{item}}"
         >
-          <van-button slot="footer" type="info" size="mini" bind:tap="onJoinGroup">参与拼团</van-button>
+          <view slot="num">
+            还差{{item.groupRemainCount}}人拼团成功
+          </view>
+          <view slot="footer">
+            <van-button type="info" size="mini" bind:tap="onJoinGroup" data-keycode="{{item.keyCode}}">参与拼团</van-button>
+          </view>
         </van-card>
       </block>
 
