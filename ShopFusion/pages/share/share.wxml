@@ -11,13 +11,19 @@
     <button class="upload-button" bindtap="chooseImage">上传图片</button>
   </view>
 
+  <!-- 加载动画或解析进度 -->
+  <view wx:if="{{loading}}" class="loading-section">
+    <text>正在解析图片 {{progress}} / {{totalImages}}</text>
+    <view class="loading-spinner"></view>
+  </view>
+
   <!-- 图片预览和解析结果 -->
   <scroll-view scroll-x="true" class="image-preview">
     <block wx:for="{{images}}" wx:key="index">
       <view class="image-item">
         <image src="{{item.path}}" class="preview-image"></image>
         <text class="parse-result">
-          {{item.result ? item.result : '无法解析该图片'}}
+          {{item.shortResult}}
         </text>
       </view>
     </block>
@@ -34,19 +40,4 @@
     style="width: {{canvasWidth}}px; height: {{canvasHeight}}px; position: absolute; top: -1000px; left: -1000px;"
     disable-scroll="true"
   ></canvas>
-
-
-  <!-- 图片预览和解析结果 -->
-<scroll-view scroll-x="true" class="image-preview">
-  <block wx:for="{{images}}" wx:key="index">
-    <view class="image-item">
-      <image src="{{item.path}}" class="preview-image"></image>
-      <text class="parse-result">
-        {{item.result}}
-      </text>
-    </view>
-  </block>
-</scroll-view>
-
-
 </view>

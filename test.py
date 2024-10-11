@@ -17,13 +17,16 @@ def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=N
     """
     # 构建初始请求 URL
     initial_url = f"{base_url}/{key_code}"
-
+    print(initial_url)
     # 默认的请求头信息
     default_headers =  {
+      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)',
       "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
       "accept-encoding": "gzip, deflate, br, zstd",
       "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
-      "cookie": 'api_uid=CkjpJmcCQXoqewBVtILWAg==; webp=1; PDDAccessToken=C2KSDKYYLOZJFETH44POXAZFFRO65F3KSR3GB4TXYVDSUZQYCBXQ120570b;'
+      "cookie": 'api_uid=CkjpJmcCQXoqewBVtILWAg==; webp=1; PDDAccessToken=5EEZYVALTALZ2XFZE3KCELJWKT3ZHT3MXUD3NEVHXKVBGJUAMF2A120570b;pdd_user_id=4365968471; Path=/; Expires=Sun, 19 Jan 2025 11:08:19 GMT, pdd_user_uin=X4SHUDVGMG7HGQBVER6XRAMGHI_GEXDA; Path=/; Expires=Sun, 19 Jan 2025 11:08:19 GMT, pdd_vds=gaLxNbPtIlIxOyNNiGyEPGmlOInsNIayNtmbOGNyIsnxnoONNwLNoOmbibEb; Expires=Fri, 18-Oct-24 11:08:19 GMT; Path=/;', # 我自己的 cookie
+      # "cookie": 'api_uid=CkjpJmcCQXoqewBVtILWAg==; webp=1; PDDAccessToken=7PCZPZGXF32P7KV2JHZQQRM2WPE45UX4S6LSOYHHQ6VMZSJT2PFQ120e06b;'
+
     }
 
     # 合并自定义 headers
@@ -43,9 +46,18 @@ def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=N
         else:
             return {'status': 'error', 'message': f"Unexpected status code: {response.status_code}"}
 
+        print(redirected_url)
         # 2. 访问重定向后的 URL
         response = requests.get(redirected_url, headers=default_headers, allow_redirects=False)
         response.raise_for_status()
+
+        # print("Request Information:")
+        # print(f"Request URL: {response.request.url}")
+        # print("Request Headers:", response.request.headers)
+        # print("Response Information:")
+        # print(f"Response Status: {response.status_code}")
+        # print("Response Headers:", response.headers)
+        # print("Response Text:", response.text)  # 打印响应内容
 
         # 3. 解析网页，找到最终 URL (可能是通过 JavaScript 跳转)
         if response.status_code == 200:
@@ -68,8 +80,11 @@ def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=N
             return {'status': 'error', 'message': f"Unexpected status code when accessing group7.html: {response.status_code}"}
 
         # 4. 访问最终的 `pincard_ask.html` 页面
+        print(final_url)
         response = requests.get(final_url, headers=default_headers)
         response.raise_for_status()
+
+
 
         # 5. 提取 window.rawData 数据
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -95,5 +110,5 @@ def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=N
         return {'status': 'error', 'message': f"Error: {str(e)}"}
 
 # 调用示例
-raw_data = make_request("FwuJqEOuvi")
+raw_data = make_request("aWZQU7BbEi")
 print(raw_data)
