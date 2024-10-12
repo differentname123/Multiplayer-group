@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {}, _tempexport
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = __MODS__[modId].m; m._exports = m._tempexports; var desp = Object.getOwnPropertyDescriptor(m, "exports"); if (desp && desp.configurable) Object.defineProperty(m, "exports", { set: function (val) { if(typeof val === "object" && val !== m._exports) { m._exports.__proto__ = val.__proto__; Object.keys(val).forEach(function (k) { m._exports[k] = val[k]; }); } m._tempexports = val }, get: function () { return m._tempexports; } }); __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1728545419738, function(require, module, exports) {
+__DEFINE__(1728739681311, function(require, module, exports) {
 
 
 const BitmapImage = require('./bitmapimage');
@@ -22,8 +22,8 @@ module.exports = {
     GifError
 };
 
-}, function(modId) {var map = {"./bitmapimage":1728545419739,"./gif":1728545419740,"./gifcodec":1728545419741,"./gifframe":1728545419743,"./gifutil":1728545419742}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728545419739, function(require, module, exports) {
+}, function(modId) {var map = {"./bitmapimage":1728739681312,"./gif":1728739681313,"./gifcodec":1728739681314,"./gifframe":1728739681316,"./gifutil":1728739681315}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1728739681312, function(require, module, exports) {
 
 
 /** @class BitmapImage */
@@ -336,7 +336,7 @@ class BitmapImage {
 module.exports = BitmapImage;
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728545419740, function(require, module, exports) {
+__DEFINE__(1728739681313, function(require, module, exports) {
 
 
 /** @class Gif */
@@ -408,7 +408,7 @@ exports.Gif = Gif;
 exports.GifError = GifError;
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728545419741, function(require, module, exports) {
+__DEFINE__(1728739681314, function(require, module, exports) {
 
 
 const Omggif = require('omggif');
@@ -812,8 +812,8 @@ function _writeFrame(gifWriter, frameIndex, frame, palette, isLocalPalette) {
     }
 }
 
-}, function(modId) { var map = {"./gif":1728545419740,"./gifutil":1728545419742,"./gifframe":1728545419743}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728545419742, function(require, module, exports) {
+}, function(modId) { var map = {"./gif":1728739681313,"./gifutil":1728739681315,"./gifframe":1728739681316}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1728739681315, function(require, module, exports) {
 
 
 /** @namespace GifUtil */
@@ -1188,8 +1188,8 @@ function _writeBinary(path, buffer) {
     });
 }
 
-}, function(modId) { var map = {"./bitmapimage":1728545419739,"./gifframe":1728545419743,"./gif":1728545419740,"./gifcodec":1728545419741}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728545419743, function(require, module, exports) {
+}, function(modId) { var map = {"./bitmapimage":1728739681312,"./gifframe":1728739681316,"./gif":1728739681313,"./gifcodec":1728739681314}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1728739681316, function(require, module, exports) {
 
 
 const BitmapImage = require('./bitmapimage');
@@ -1305,8 +1305,8 @@ GifFrame.DisposeToPrevious = 3;
 
 exports.GifFrame = GifFrame;
 
-}, function(modId) { var map = {"./bitmapimage":1728545419739,"./gif":1728545419740}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1728545419738);
+}, function(modId) { var map = {"./bitmapimage":1728739681312,"./gif":1728739681313}; return __REQUIRE__(map[modId], modId); })
+return __REQUIRE__(1728739681311);
 })()
 //miniprogram-npm-outsideDeps=["omggif","fs","image-q"]
 //# sourceMappingURL=index.js.map

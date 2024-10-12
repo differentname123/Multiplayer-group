@@ -6,6 +6,8 @@ Page({
     page: 1,
     loadingMore: false,
     hasMore: true,
+    searchKeyword: '', // 搜索关键词
+    isRefreshing: false, // 下拉刷新状态
     filterSelected: {
       onePerson: false, // "只差一人" 标签状态，默认未选中
       mySubscription: false // "我的订阅" 标签状态
@@ -23,9 +25,52 @@ Page({
     clearInterval(this.data.globalInterval);
   },
 
+  // 处理搜索事件
+  onSearch(event) {
+    const keyword = event.detail.trim();
+    this.setData({
+      searchKeyword: keyword,
+      page: 1,
+      productList: [],
+      filteredProductList: [],
+      hasMore: true
+    });
+    this.loadProducts();
+  },
+
+  // 取消搜索
+  onCancel() {
+    this.setData({
+      searchKeyword: '',
+      page: 1,
+      productList: [],
+      filteredProductList: [],
+      hasMore: true
+    });
+    this.loadProducts();
+  },
+
+  // 下拉刷新
+  onPullDownRefresh() {
+    this.setData({
+      isRefreshing: true,
+      page: 1,
+      productList: [],
+      filteredProductList: [],
+      hasMore: true
+    });
+    this.loadProducts(() => {
+      wx.stopPullDownRefresh(); // 停止下拉刷新动画
+      this.setData({ isRefreshing: false });
+    });
+  },
+
   // 加载商品数据
-  loadProducts() {
-    if (this.data.loadingMore || !this.data.hasMore) return;
+  loadProducts(callback) {
+    if (this.data.loadingMore || !this.data.hasMore) {
+      if (callback) callback();
+      return;
+    }
 
     this.setData({ loadingMore: true });
 
@@ -36,12 +81,16 @@ Page({
       filters.groupRemainCount = 1;
     }
 
+    // 将搜索关键词传递给云函数
+    const searchKeyword = this.data.searchKeyword;
+
     // 调用云函数获取商品数据
     wx.cloud.callFunction({
       name: 'getProducts',
       data: {
         page: this.data.page,
-        filters: filters
+        filters: filters,
+        searchKeyword: searchKeyword
       }
     }).then(res => {
       if (!res.result.success) {
@@ -50,29 +99,16 @@ Page({
           icon: 'none'
         });
         this.setData({ loadingMore: false });
+        if (callback) callback();
         return;
       }
 
       const newProducts = res.result.data;
 
-      // 如果返回的数据少于预期（例如少于 pageSize），且已是最后一页，设置 hasMore 为 false
-      const pageSize = 10; // 与云函数中每页数量一致
+      // 如果返回的数据少于预期，设置 hasMore 为 false
+      const pageSize = 6; // 与云函数中每页数量一致
       if (newProducts.length < pageSize) {
         this.setData({ hasMore: false });
-        if (newProducts.length === 0 && this.data.page === 1) {
-          // 如果第一页就没有数据，弹出提示
-          wx.showToast({
-            title: '没有符合条件的商品',
-            icon: 'none'
-          });
-        }
-      }
-
-      if (newProducts.length === 0 && this.data.page > 1) {
-        wx.showToast({
-          title: '没有更多商品了',
-          icon: 'none'
-        });
       }
 
       // 处理商品数据，转换字段
@@ -110,6 +146,8 @@ Page({
       // 更新筛选后的商品列表
       this.filterProducts();
 
+      if (callback) callback();
+
     }).catch(err => {
       console.error('获取商品数据失败', err);
       wx.showToast({
@@ -117,6 +155,7 @@ Page({
         icon: 'none'
       });
       this.setData({ loadingMore: false });
+      if (callback) callback();
     });
   },
 
@@ -125,32 +164,24 @@ Page({
     this.setData({
       globalInterval: setInterval(() => {
         this.updateCountdowns();
-      }, 100) // 每 100 毫秒更新一次
+      }, 1000) // 每秒更新一次
     });
   },
 
   // 更新所有商品的倒计时
   updateCountdowns() {
-    const now = Date.now(); // 当前时间毫秒数
     const updatedProductList = this.data.productList.map(product => {
       const countdown = this.calculateCountdown(product.expireTime);
       return { ...product, countdown };
     });
 
-    const { mySubscription } = this.data.filterSelected;
-
-    let filteredProducts = updatedProductList;
-
-    // 根据选中的标签进行筛选
-    if (mySubscription) {
-      filteredProducts = filteredProducts.filter(product => product.mySubscription);
-    }
-
     // 更新数据
     this.setData({
-      productList: updatedProductList,
-      filteredProductList: filteredProducts
+      productList: updatedProductList
     });
+
+    // 更新筛选后的商品列表
+    this.filterProducts();
   },
 
   // 计算倒计时
@@ -166,11 +197,12 @@ Page({
     const hours = Math.floor(timeLeft / (3600 * 1000));
     const minutes = Math.floor((timeLeft % (3600 * 1000)) / (60 * 1000));
     const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
-    const milliseconds = Math.floor((timeLeft % 1000) / 10); // 取两位小数
 
-    const millisecondsStr = milliseconds < 10 ? `0${milliseconds}` : milliseconds;
+    const hoursStr = hours < 10 ? `0${hours}` : hours;
+    const minutesStr = minutes < 10 ? `0${minutes}` : minutes;
+    const secondsStr = seconds < 10 ? `0${seconds}` : seconds;
 
-    return `${hours}:${minutes}:${seconds}:${millisecondsStr}`;
+    return `${hoursStr}:${minutesStr}:${secondsStr}`;
   },
 
   // 标签点击事件
@@ -195,7 +227,7 @@ Page({
 
   // 筛选商品列表
   filterProducts() {
-    const { mySubscription } = this.data.filterSelected;
+    const { mySubscription, onePerson } = this.data.filterSelected;
 
     let filteredProducts = this.data.productList;
 
@@ -204,17 +236,26 @@ Page({
       filteredProducts = filteredProducts.filter(product => product.mySubscription);
     }
 
+    if (onePerson) {
+      filteredProducts = filteredProducts.filter(product => product.groupRemainCount === 1);
+    }
+
     // 更新筛选后的商品列表
     this.setData({
       filteredProductList: filteredProducts
     });
   },
 
-  // 滚动到底部加载更多商品
+  // scroll-view 滚动到底部
+  onScrollToLower() {
+    this.loadMoreProducts();
+  },
+
+  // 加载更多商品
   loadMoreProducts() {
     if (this.data.hasMore && !this.data.loadingMore) {
       this.loadProducts();
-    } else if (!this.data.hasMore) {
+    } else if (!this.data.hasMore && this.data.filteredProductList.length > 0) {
       wx.showToast({
         title: '没有更多商品了',
         icon: 'none'

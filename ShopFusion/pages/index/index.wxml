@@ -29,7 +29,15 @@
   </view>
 
   <!-- 商品列表 -->
-  <scroll-view scroll-y="true" style="height: calc(100vh - 100rpx);" bindscrolltolower="loadMoreProducts">
+  <scroll-view
+    class="scroll-view"
+    scroll-y
+    style="height: calc(100vh - 140rpx);"
+    bindscrolltolower="onScrollToLower"
+    bindrefresherrefresh="onPullDownRefresh"
+    refresher-enabled="true"
+    refresher-triggered="{{isRefreshing}}"
+  >
     <view class="product-list">
       <block wx:for="{{filteredProductList}}" wx:key="id">
         <van-card
@@ -51,7 +59,21 @@
       </block>
 
       <!-- 加载更多 -->
-      <van-loading wx:if="{{loadingMore}}" />
+      <view class="loading-area" wx:if="{{loadingMore}}">
+        <van-loading size="24px" type="spinner" />
+        <text>正在加载...</text>
+      </view>
+
+      <!-- 没有更多商品了 -->
+      <view class="no-more" wx:if="{{!hasMore && !loadingMore && filteredProductList.length > 0}}">
+        <text>没有更多商品了</text>
+      </view>
+
+      <!-- 没有数据 -->
+      <view class="no-data" wx:if="{{filteredProductList.length === 0 && !loadingMore}}">
+        <text>没有符合条件的商品</text>
+      </view>
+
     </view>
   </scroll-view>
 </view>
