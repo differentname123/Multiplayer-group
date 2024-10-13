@@ -310,6 +310,50 @@ Page({
     });
   },
 
+  onShareClick(event) {
+    const productId = event.currentTarget.dataset.id;
+    console.log(`分享按钮点击，商品ID：${productId}`);
+    
+    // 弹窗提示
+    wx.showToast({
+      title: '点击了分享按钮',
+      icon: 'none',
+      duration: 2000
+    });
+    
+    // 在此添加分享逻辑
+  },
+  
+  onSubscribeClick(event) {
+    const productId = event.currentTarget.dataset.id;
+    const productIndex = this.data.productList.findIndex(p => p.id === productId);  // 找到商品的索引
+  
+    if (productIndex === -1) {
+      console.error('未找到商品');
+      return;
+    }
+  
+    const isSubscribed = this.data.productList[productIndex].mySubscription;
+    const newSubscriptionStatus = !isSubscribed;
+  
+    // 更新商品订阅状态
+    this.setData({
+      [`productList[${productIndex}].mySubscription`]: newSubscriptionStatus  // 正确使用索引
+    });
+  
+    const statusText = newSubscriptionStatus ? '已订阅' : '订阅';
+    const color = newSubscriptionStatus ? 'yellow' : 'gray';
+  
+    console.log(`订阅按钮点击，商品ID：${productId}，状态：${statusText}`);
+  
+    // 弹窗提示
+    wx.showToast({
+      title: statusText,
+      icon: 'none',
+      duration: 2000
+    });
+  },
+
   // 商品卡片点击事件（可根据需要实现）
   onProductClick(event) {
     const item = event.currentTarget.dataset.item;

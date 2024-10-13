@@ -42,17 +42,55 @@
           <van-card
             thumb="{{item.imageUrl}}"
             title="{{item.title}}"
-            price="{{item.price}}"
-            desc="优惠：¥{{item.discountPrice}}"
-            tag="{{item.countdown}}"
             bind:click="onProductClick"
             data-item="{{item}}"
           >
-            <view slot="num">
-              还差{{item.groupRemainCount}}人拼团成功
+            <!-- 价格部分 -->
+            <view class="desc-price-row" slot="bottom">
+              <view class="desc-text">
+                <text class="label-text">已优惠:</text>
+                <text class="discount-price">¥{{item.discountPrice}}</text>
+              </view>
+              <view class="price-text">
+                <text class="label-text">现价:</text>
+                <text class="current-price">¥{{item.price}}</text>
+              </view>
             </view>
-            <view slot="footer">
-              <van-button type="info" size="mini" bind:tap="onJoinGroup" data-keycode="{{item.keyCode}}">参与拼团</van-button>
+
+            <!-- 拼团人数和倒计时部分 -->
+            <view class="group-info-row" slot="bottom">
+              <view class="group-remaining-timer">
+                <text>只差<text class="group-remain-count">{{item.groupRemainCount}}</text>人拼团成功</text>
+              </view>
+              <text class="countdown">{{item.countdown}}</text>
+            </view>
+
+            <!-- 底部操作按钮 -->
+            <view slot="footer" class="product-footer">
+              <!-- 分享按钮 -->
+              <view class="action-item">
+                <van-icon name="share-o" bindtap="onShareClick" data-id="{{item.id}}" size="24rpx" class="action-icon" />
+                <text class="action-text">分享</text>
+              </view>
+
+              <!-- 订阅按钮 -->
+              <view class="action-item">
+                <van-icon
+                  name="{{item.mySubscription ? 'star' : 'star-o'}}"
+                  bindtap="onSubscribeClick"
+                  data-id="{{item.id}}"
+                  size="24rpx"
+                  class="action-icon"
+                  color="{{item.mySubscription ? 'yellow' : 'gray'}}"
+                />
+                <text class="action-text">{{item.mySubscription ? '已订阅' : '订阅'}}</text>
+              </view>
+
+              <!-- 参与拼团按钮 -->
+              <view class="action-item join-group-item">
+                <van-icon name="friends-o" bindtap="onJoinGroup" data-keycode="{{item.keyCode}}" size="24rpx" class="action-icon" />
+                <text class="action-text">参与拼团</text>
+              </view>
             </view>
           </van-card>
         </block>
