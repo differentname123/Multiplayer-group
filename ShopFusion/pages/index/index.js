@@ -1,6 +1,11 @@
 // index.js
 Page({
   data: {
+    statusBarHeight: 0,
+    navigationBarHeight: 0,
+    totalNavHeight: 0,
+    filterBarHeight: 44, // 筛选栏高度，视情况调整
+    scrollViewTop: 0,
     productList: [], // 商品的完整列表
     filteredProductList: [], // 筛选后的商品列表
     page: 1,
@@ -16,6 +21,24 @@ Page({
   },
 
   onLoad() {
+    // 获取系统信息
+    const systemInfo = wx.getSystemInfoSync();
+    const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
+
+    // 计算导航栏高度
+    const statusBarHeight = systemInfo.statusBarHeight;
+    const navBarHeight = (menuButtonInfo.top - statusBarHeight) * 2 + menuButtonInfo.height;
+
+    // 计算 scroll-view 的起始位置
+    const filterBarHeight = this.data.filterBarHeight;
+    const scrollViewTop = statusBarHeight + navBarHeight + filterBarHeight;
+
+    this.setData({
+      statusBarHeight,
+      navBarHeight,
+      scrollViewTop
+    });
+
     this.loadProducts();
     this.startGlobalCountdown(); // 启动全局倒计时
   },

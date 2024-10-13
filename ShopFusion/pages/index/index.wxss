@@ -1,37 +1,59 @@
 /* 页面容器 */
 .page-container {
-  display: flex;
-  flex-direction: column;
+  position: relative;
   height: 100vh;
   background-color: #f0f0f5;
 }
 
-/* 搜索栏与筛选栏样式 */
-van-search {
-  margin-bottom: 5px;
+/* 内容区域，位于导航栏下面 */
+.content {
+  position: absolute;
+  top: 64px;  /* 状态栏高度 + 导航栏高度，需与组件中的 navBarHeight 保持一致 */
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 筛选栏样式 */
 .filter-bar {
+  background-color: #fff;
   display: flex;
   justify-content: space-around;
-  margin-bottom: 5px;
+  padding: 10rpx 0;
+  z-index: 999;
 }
 
-/* 标签样式 */
-van-tag {
-  padding: 5px 10px;
-  transition: all 0.3s ease;
+/* 筛选标签样式 */
+.filter-tag {
+  font-size: 16px;
+  color: black;
+  padding: 5rpx 10rpx;
+  position: relative;
+}
+
+.filter-tag.active {
+  color: red;
+}
+
+.filter-tag.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2rpx;
+  background-color: red;
 }
 
 /* 商品列表样式 */
-.product-list {
-  padding: 10px;
-}
-
-/* scroll-view 样式 */
 .scroll-view {
   flex: 1;
+  overflow: auto;
+}
+
+.product-list {
+  padding: 20rpx;
 }
 
 /* 加载更多样式 */

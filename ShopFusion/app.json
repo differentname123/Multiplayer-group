@@ -5,6 +5,13 @@
     "pages/mine/mine",
     "pages/tutorial/tutorial"
   ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationStyle": "custom" 
+  },
+  "usingComponents": {
+    "custom-nav": "/components/custom-nav/custom-nav"
+  },
   "tabBar": {
     "list": [
       {
