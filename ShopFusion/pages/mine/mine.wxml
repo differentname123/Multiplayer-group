@@ -1,25 +1,38 @@
-<view class="page-container">
-  <!-- 页面标题 -->
-  <view class="page-title">分享我的图片</view>
-
-  <!-- 图片上传区域 -->
-  <view class="upload-section">
-    <button bindtap="chooseImage">上传图片</button>
-    <scroll-view scroll-x="true" class="image-preview">
-      <block wx:for="{{images}}" wx:key="*this">
-        <image src="{{item}}" class="preview-image"></image>
-      </block>
-    </scroll-view>
+<view class="container">
+  <!-- 用户头像和昵称 -->
+  <view class="header">
+    <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+    <text class="username">{{userInfo.nickName}}</text>
+  </view>
+  
+  <!-- 我的积分展示 -->
+  <view class="section">
+    <text class="section-title">我的积分: {{points}}</text>
   </view>
 
-  <!-- 分享结果显示区域 -->
-  <view class="result-section" wx:if="{{result}}">
-    <text>分享结果：</text>
-    <text>{{result}}</text>
-  </view>
-
-  <!-- 操作按钮 -->
-  <view class="action-buttons">
-    <button bindtap="parseImages" wx:if="{{images.length > 0}}">解析并分享</button>
+  <!-- 菜单列表 -->
+  <view class="menu">
+    <navigator url="/pages/share/share" class="menu-item">
+      <icon type="success" size="30"></icon>
+      <text>分享小程序</text>
+      <text class="points">可获得2积分</text>
+    </navigator>
+    <navigator url="/pages/video/video" class="menu-item">
+      <icon type="info" size="30"></icon>
+      <text>观看视频</text>
+      <text class="points">可获得1积分</text>
+    </navigator>
+    <navigator url="/pages/group/group" class="menu-item">
+      <icon type="warn" size="30"></icon>
+      <text>多人拼团群</text>
+    </navigator>
+    <navigator url="/pages/customer/customer" class="menu-item">
+      <icon type="waiting" size="30"></icon>
+      <text>联系客服</text>
+    </navigator>
+    <navigator url="/pages/about/about" class="menu-item">
+      <icon type="success_no_circle" size="30"></icon>
+      <text>关于我们</text>
+    </navigator>
   </view>
 </view>

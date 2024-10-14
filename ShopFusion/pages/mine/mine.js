@@ -1,45 +1,48 @@
 Page({
   data: {
-    images: [],
-    result: ''
+    userInfo: {
+      nickName: '',
+      avatarUrl: ''
+    },
+    points: 3,
+    openid: ''
   },
-
-  // 选择图片
-  chooseImage() {
+  onLoad: function () {
+    this.getOpenIdAndUserInfo();
+  },
+  getOpenIdAndUserInfo: function () {
     const that = this;
-    wx.chooseImage({
-      count: 9, // 最多可选9张
-      sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图
-      sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机
-      success(res) {
-        // 将选择的图片添加到数据中
+    // 调用云函数获取 openid
+    wx.cloud.callFunction({
+      name: 'getOpenId', // 云函数的名称
+      success: function (res) {
+        const openid = res.result.openid;
+        wx.setStorageSync('openid', openid);
         that.setData({
-          images: that.data.images.concat(res.tempFilePaths)
+          openid: openid
         });
+        
+        that.checkUserInfo(); // 检查用户信息
+      },
+      fail: function (err) {
+        console.error('[云函数] [getOpenId] 调用失败', err);
       }
     });
   },
-
-  // 解析图片并分享
-  parseImages() {
-    const that = this;
-    // 模拟解析函数，返回一个字符串
-    function parseFunction(images) {
-      return `成功解析了${images.length}张图片！`;
+  checkUserInfo: function () {
+    let userInfo = wx.getStorageSync('userInfo') || null;
+    
+    if (!userInfo) {
+      // 使用默认头像和昵称
+      userInfo = {
+        nickName: '用户_' + this.data.openid.substring(0, 6),
+        avatarUrl: '/images/default.png'
+      };
+      wx.setStorageSync('userInfo', userInfo);
     }
-
-    const result = parseFunction(this.data.images);
-
-    // 更新解析结果
+    
     this.setData({
-      result: result
-    });
-
-    // 模拟分享操作，可以在这里调用分享API
-    wx.showToast({
-      title: '分享成功！',
-      icon: 'success',
-      duration: 2000
+      userInfo: userInfo
     });
   }
 });
