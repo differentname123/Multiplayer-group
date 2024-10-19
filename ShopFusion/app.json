@@ -3,14 +3,16 @@
     "pages/index/index",
     "pages/share/share",
     "pages/mine/mine",
-    "pages/tutorial/tutorial"
+    "pages/tutorial/tutorial",
+    "pages/profile/profile"
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationStyle": "custom" 
+    "navigationStyle": "custom"
   },
   "usingComponents": {
-    "custom-nav": "/components/custom-nav/custom-nav"
+    "custom-nav": "/components/custom-nav/custom-nav",
+    "title-nav": "/components/title-nav/title-nav"
   },
   "tabBar": {
     "list": [
@@ -34,5 +36,10 @@
       }
     ],
     "position": "bottom"
+  },
+  "permission": {
+    "scope.userInfo": {
+      "desc": "获取您的公开信息（昵称、头像等）"
+    }
   }
 }
